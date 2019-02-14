@@ -1,0 +1,18 @@
+{
+  "action": "opened",
+  "pull_request": {
+    "number": 3,
+    "requested_teams": [
+    ],
+    "user": {
+      "login": "submitter"
+    }
+  },
+  "repository": {
+    "name": "bar",
+    "full_name": "foo/bar",
+    "owner": {
+      "login": "foo"
+    }
+  }
+}

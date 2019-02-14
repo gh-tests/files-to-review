@@ -1,0 +1,58 @@
+{
+  "name": "legal-to-review",
+  "version": "1.0.0",
+  "description": "Legal-to-review is a Probot app that requests review from legal team when certain file(s) (e.g. LICENSE, etc.) is submitted with pull request [pr].",
+  "author": "Jacek Centkowski <geminica.programs@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com//legal-to-review.git",
+  "homepage": "https://github.com//legal-to-review",
+  "bugs": "https://github.com//legal-to-review/issues",
+  "keywords": [
+    "probot",
+    "github",
+    "probot-app"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "nodemon --exec \"npm start\"",
+    "start": "probot run ./lib/index.js",
+    "lint": "standard **/*.ts --fix",
+    "test": "jest && standard **/*.ts",
+    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+  },
+  "dependencies": {
+    "nock": "^10.0.6",
+    "@types/nock": "^9.3.1",
+    "probot": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.13",
+    "@types/node": "^10.12.19",
+    "eslint-plugin-typescript": "^0.14.0",
+    "jest": "^23.4.0",
+    "nodemon": "^1.18.9",
+    "smee-client": "^1.0.2",
+    "standard": "^12.0.1",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.4",
+    "typescript-eslint-parser": "^22.0.0"
+  },
+  "engines": {
+    "node": ">= 10.0.0"
+  },
+  "standard": {
+    "parser": "typescript-eslint-parser",
+    "env": [
+      "jest"
+    ],
+    "plugins": [
+      "typescript"
+    ],
+    "ignore": [
+      "/lib/"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "filename": "foofile.txt",
+    "status": "added"
+  },
+  {
+    "filename": "barfile.txt",
+    "status": "deleted"
+  }
+]
