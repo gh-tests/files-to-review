@@ -1,5 +1,5 @@
 import { Application, Context } from 'probot' // eslint-disable-line no-unused-vars
-import { PullRequestsListFilesResponseItem } from '@octokit/rest' // eslint-disable-line no-unused-vars
+import { PullRequestsListFilesResponseItem, PullRequestsCreateReviewParams } from '@octokit/rest' // eslint-disable-line no-unused-vars
 
 export = (app: Application) => {
   const DEF_PATTERN: string = '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
@@ -15,12 +15,18 @@ export = (app: Application) => {
 
     // read config from config.yaml
     const config = await context.config('config.yml',
-      { legalFileRegExp: DEF_PATTERN })
+      { legalFileRegExp: DEF_PATTERN,
+        legalTeam: '' })
 
     const pattern: RegExp = new RegExp(config.legalFileRegExp, 'i')
     const legalFiles: string[] = files.filter(file => isLegal(pattern, file.filename)).map(file => file.filename)
     if (legalFiles.length > 0) {
-      await requestReview(context)
+      // request review only when legal team is specified
+      if (config.legalTeam.length > 0) {
+        await requestReview(context, config.legalTeam)
+      } else {
+        await review(context, legalFiles)
+      }
     }
   })
 
@@ -33,9 +39,20 @@ export = (app: Application) => {
     return pattern.test(path)
   }
 
-  async function requestReview (context: Context) {
-    context.log(`'PR:[${context.payload.pull_request.number}] contains files that need to be reviewed by legal team'`)
-    const reviewRequest = context.issue({ team_reviewers: [ 'legal' ] })
+  async function requestReview (context: Context, team: string) {
+    context.log(`'Issue review request for PR:[${context.payload.pull_request.number}]'`)
+    const reviewRequest = context.issue({ team_reviewers: [ team ] })
     await context.github.pullRequests.createReviewRequest(reviewRequest)
+  }
+
+  async function review (context: Context, legalFiles: string[]) {
+    context.log(`'Comment that some files need legal review in PR:[${context.payload.pull_request.number}]'`)
+    const body: string = 'The following files require legal review:' +
+      legalFiles.reduce(function (acc: string, val: string) {
+        return acc.concat('\n', val)
+      }, '')
+    const reviewComment: PullRequestsCreateReviewParams = context.issue({ body: body })
+    reviewComment.event = 'COMMENT'
+    await context.github.pullRequests.createReview(reviewComment)
   }
 }
