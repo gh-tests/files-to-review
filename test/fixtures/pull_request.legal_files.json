@@ -1,10 +1,10 @@
 [
   {
-    "filename": "LICENSE",
+    "filename": "some.file",
     "status": "added"
   },
   {
-    "filename": "CODE_OF_CONDUCT",
+    "filename": "some/path/LICENSE",
     "status": "modified"
   }
 ]

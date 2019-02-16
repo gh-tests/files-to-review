@@ -8,6 +8,7 @@ import prWithLegalFiles from './fixtures/pull_request.legal_files.json'
 import prWithNoLegalFiles from './fixtures/pull_request.ignored_files.json'
 import prReviewRequestBody from './fixtures/pull_request.review_request.json'
 import prOpened from './fixtures/pull_request.opened.json'
+import contentFile from './fixtures/content_file.json'
 
 const gitHubApiUrl: string = 'https://api.github.com'
 
@@ -20,6 +21,7 @@ describe('Legal-to-review rest flow app', () => {
     probot = new Probot({ id: 123, cert: 'test' })
     const app = probot.load(myProbotApp)
     app.app = () => 'test'
+    nock.cleanAll()
   })
 
   test("sends review request to 'legal' group", async (done) => {
@@ -30,6 +32,10 @@ describe('Legal-to-review rest flow app', () => {
       .get('/repos/foo/bar/pulls/3/files')
       .query({ per_page: 100 })
       .reply(200, prWithLegalFiles)
+
+    const config = nock(gitHubApiUrl)
+      .get('/repos/foo/bar/contents/.github/config.yml')
+      .reply(404)
 
     // 'legal' team review request should be performed
     const review = nock(gitHubApiUrl)
@@ -46,6 +52,9 @@ describe('Legal-to-review rest flow app', () => {
     if (!files.isDone()) {
       throw new Error('PR files were not requested')
     }
+    if (!config.isDone()) {
+      throw new Error('Config was not requested')
+    }
     if (!review.isDone()) {
       throw new Error('PR legal review was not requested')
     }
@@ -61,6 +70,10 @@ describe('Legal-to-review rest flow app', () => {
       .query({ per_page: 100 })
       .reply(200, prWithNoLegalFiles)
 
+    const config = nock(gitHubApiUrl)
+      .get('/repos/foo/bar/contents/.github/config.yml')
+      .reply(404)
+
     // 'legal' team review request shouldn't be performed
     nock(gitHubApiUrl)
       .post('/repos/foo/bar/pulls/3/requested_reviewers', (body: any) => {
@@ -74,6 +87,50 @@ describe('Legal-to-review rest flow app', () => {
     // verify endpoints were reached
     if (!files.isDone()) {
       throw Error('PR files endpoint was not reached')
+    }
+    if (!config.isDone()) {
+      throw new Error('Config was not requested')
+    }
+    done()
+  })
+
+  test('reads regexp from config.yml', async (done) => {
+    testAccessToken()
+
+    // PR has legal files
+    const files = nock(gitHubApiUrl)
+      .get('/repos/foo/bar/pulls/3/files')
+      .query({ per_page: 100 })
+      .reply(200, prWithNoLegalFiles)
+
+    // return config.yml that has regexp that matches 'barfile.txt'
+    contentFile.name = 'config.yml'
+    contentFile.path = '.github/config.yml'
+    contentFile.content = Buffer.from('legalFileRegExp: "barfile"').toString('base64')
+    const config = nock(gitHubApiUrl)
+      .get('/repos/foo/bar/contents/.github/config.yml')
+      .reply(200, contentFile)
+
+    // 'legal' team review request should be performed
+    const review = nock(gitHubApiUrl)
+      .post('/repos/foo/bar/pulls/3/requested_reviewers', (body: any) => {
+        expect(body).toMatchObject(prReviewRequestBody)
+        return true
+      })
+      .reply(200)
+
+    // Receive open PR event
+    await probot.receive({ name: 'pull_request', payload: prOpened })
+
+    // check if both endpoints were called
+    if (!files.isDone()) {
+      throw new Error('PR files were not requested')
+    }
+    if (!config.isDone()) {
+      throw new Error('Config was not requested')
+    }
+    if (!review.isDone()) {
+      throw new Error('PR legal review was not requested')
     }
     done()
   })
