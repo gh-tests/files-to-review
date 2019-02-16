@@ -48,16 +48,7 @@ describe('Legal-to-review rest flow app', () => {
     // Receive open PR event
     await probot.receive({ name: 'pull_request', payload: prOpened })
 
-    // check if both endpoints were called
-    if (!files.isDone()) {
-      throw new Error('PR files were not requested')
-    }
-    if (!config.isDone()) {
-      throw new Error('Config was not requested')
-    }
-    if (!review.isDone()) {
-      throw new Error('PR legal review was not requested')
-    }
+    verifyMocksWereHit(files, config, review)
     done()
   })
 
@@ -84,13 +75,7 @@ describe('Legal-to-review rest flow app', () => {
     // Receive open PR event
     await probot.receive({ name: 'pull_request', payload: prOpened })
 
-    // verify endpoints were reached
-    if (!files.isDone()) {
-      throw Error('PR files endpoint was not reached')
-    }
-    if (!config.isDone()) {
-      throw new Error('Config was not requested')
-    }
+    verifyMocksWereHit(files, config)
     done()
   })
 
@@ -122,16 +107,7 @@ describe('Legal-to-review rest flow app', () => {
     // Receive open PR event
     await probot.receive({ name: 'pull_request', payload: prOpened })
 
-    // check if both endpoints were called
-    if (!files.isDone()) {
-      throw new Error('PR files were not requested')
-    }
-    if (!config.isDone()) {
-      throw new Error('Config was not requested')
-    }
-    if (!review.isDone()) {
-      throw new Error('PR legal review was not requested')
-    }
+    verifyMocksWereHit(files, config, review)
     done()
   })
 })
@@ -141,4 +117,16 @@ function testAccessToken () {
   nock(gitHubApiUrl)
     .post('/app/installations/2/access_tokens')
     .reply(200, { token: 'test' })
+}
+
+function verifyMocksWereHit (...mocks: nock.Scope[]) {
+  const pendingMocks: string[] = mocks.filter(mock => !mock.isDone())
+    .map(mock => mock.pendingMocks()
+      .reduce(function (acc, val) {
+        return acc.concat('\n', val)
+      }, ''))
+
+  if (pendingMocks.length > 0) {
+    throw new Error('The following mocks were expected but not hit:' + pendingMocks)
+  }
 }
