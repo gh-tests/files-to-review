@@ -1,5 +1,5 @@
 import { Application, Context } from 'probot' // eslint-disable-line no-unused-vars
-import { PullRequestsListFilesResponseItem, PullRequestsCreateReviewParams } from '@octokit/rest' // eslint-disable-line no-unused-vars
+import { PullRequestsListFilesResponseItem, PullRequestsCreateReviewParams, PullRequestsCreateReviewRequestParams } from '@octokit/rest' // eslint-disable-line no-unused-vars
 
 export = (app: Application) => {
   const DEF_PATTERN: string = '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
@@ -17,6 +17,7 @@ export = (app: Application) => {
     const config = await context.config('config.yml',
       { legalFileRegExp: DEF_PATTERN,
         legalTeam: '' })
+    app.log.debug('Config: %j', config)
 
     const pattern: RegExp = new RegExp(config.legalFileRegExp, 'i')
     const legalFiles: string[] = files.filter(file => isLegal(pattern, file.filename)).map(file => file.filename)
@@ -40,8 +41,8 @@ export = (app: Application) => {
   }
 
   async function requestReview (context: Context, team: string) {
-    context.log(`'Issue review request for PR:[${context.payload.pull_request.number}]'`)
-    const reviewRequest = context.issue({ team_reviewers: [ team ] })
+    context.log(`'Issue review request for PR:[${context.payload.pull_request.number}] for team: [${team}]'`)
+    const reviewRequest: PullRequestsCreateReviewRequestParams = context.issue({ team_reviewers: [ team ] })
     await context.github.pullRequests.createReviewRequest(reviewRequest)
   }
 
@@ -51,7 +52,7 @@ export = (app: Application) => {
       legalFiles.reduce(function (acc: string, val: string) {
         return acc.concat('\n', val)
       }, '')
-    const reviewComment: PullRequestsCreateReviewParams = context.issue({ body: body })
+    let reviewComment: PullRequestsCreateReviewParams = context.issue({ body: body })
     reviewComment.event = 'COMMENT'
     await context.github.pullRequests.createReview(reviewComment)
   }
