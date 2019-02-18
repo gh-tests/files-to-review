@@ -7,6 +7,8 @@ export = (app: Application) => {
   app.on('pull_request.opened', async (context) => {
     context.log(`'PR:[${context.payload.pull_request.number}] has been created`)
 
+    // TODO: current implementation is synchronous consider
+    // rewriting it so that it is asynchronous to save GitHub resources
     const files: PullRequestsListFilesResponseItem[] = await context.github.paginate(
       context.github.pullRequests.listFiles(
         context.repo({ number: context.payload.pull_request.number, per_page: 100 })),
@@ -42,6 +44,7 @@ export = (app: Application) => {
 
   async function requestReview (context: Context, team: string) {
     context.log(`'Issue review request for PR:[${context.payload.pull_request.number}] for team: [${team}]'`)
+    // TODO: consider checking if team exists and in case it doesn't comment on PR
     const reviewRequest: PullRequestsCreateReviewRequestParams = context.issue({ team_reviewers: [ team ] })
     await context.github.pullRequests.createReviewRequest(reviewRequest)
   }

@@ -29,6 +29,11 @@ legalTeam: lawyers
 
 _Note that both options can be combined in single `.github/config.yml` file._
 
+## TODO
+
+Turn legal-to-review into general purpose pull request comment/review request engine and turn legal-to-review into
+implementation example.
+
 ## Contributing
 
 If you have suggestions for how legal-to-review could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
