@@ -5,7 +5,7 @@ export = (app: Application) => {
   const DEF_PATTERN: string = '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
 
   app.on('pull_request.opened', async (context) => {
-    context.log(`'PR:[${context.payload.pull_request.number}] has been created`)
+    context.log(`PR:[${context.payload.pull_request.number}] has been created`)
 
     // TODO: current implementation is synchronous consider
     // rewriting it so that it is asynchronous to save GitHub resources
@@ -35,7 +35,7 @@ export = (app: Application) => {
   })
 
   app.on('pull_request.synchronized', async (context) => {
-    context.log(`'PR:[${context.payload.pull_request.number} has been updated`)
+    context.log(`PR:[${context.payload.pull_request.number}] has been updated`)
     // TODO: next step would be to handle PR updates
   })
 
@@ -44,14 +44,14 @@ export = (app: Application) => {
   }
 
   async function requestReview (context: Context, team: string) {
-    context.log(`'Issue review request for PR:[${context.payload.pull_request.number}] for team: [${team}]'`)
+    context.log(`Issue review request for PR:[${context.payload.pull_request.number}] for team: [${team}]`)
     // TODO: consider checking if team exists and in case it doesn't comment on PR
     const reviewRequest: PullRequestsCreateReviewRequestParams = context.issue({ team_reviewers: [ team ] })
     await context.github.pullRequests.createReviewRequest(reviewRequest)
   }
 
   async function review (context: Context, legalFiles: string[]) {
-    context.log(`'Comment that some files need legal review in PR:[${context.payload.pull_request.number}]'`)
+    context.log(`Comment that some files need legal review in PR:[${context.payload.pull_request.number}]`)
     const body: string = 'The following files require legal review:' +
       legalFiles.reduce(function (acc: string, val: string) {
         return acc.concat('\n', val)
