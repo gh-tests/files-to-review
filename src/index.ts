@@ -19,7 +19,7 @@ export = (app: Application) => {
     const config = await context.config('config.yml',
       { legalFileRegExp: DEF_PATTERN,
         legalTeam: '' })
-    app.log.debug('Config: %j', config)
+    app.log.debug('legalFileRegExp: [%s], legalTeam: [%s]', config.legalFileRegExp, config.legalTeam)
 
     const pattern: RegExp = new RegExp(config.legalFileRegExp, 'i')
     const legalFiles: string[] = files.filter(file => isLegal(pattern, file.filename)).map(file => file.filename)
