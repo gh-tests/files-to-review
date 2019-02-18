@@ -9,17 +9,18 @@ export = (app: Application) => {
 
     // TODO: current implementation is synchronous consider
     // rewriting it so that it is asynchronous to save GitHub resources
-    const files: PullRequestsListFilesResponseItem[] = await context.github.paginate(
-      context.github.pullRequests.listFiles(
-        context.repo({ number: context.payload.pull_request.number, per_page: 100 })),
-      res => res.data
-    )
 
     // read config from config.yaml
     const config = await context.config('config.yml',
       { legalFileRegExp: DEF_PATTERN,
         legalTeam: '' })
     app.log.debug('legalFileRegExp: [%s], legalTeam: [%s]', config.legalFileRegExp, config.legalTeam)
+
+    const files: PullRequestsListFilesResponseItem[] = await context.github.paginate(
+      context.github.pullRequests.listFiles(
+        context.repo({ number: context.payload.pull_request.number, per_page: 100 })),
+      res => res.data
+    )
 
     const pattern: RegExp = new RegExp(config.legalFileRegExp, 'i')
     const legalFiles: string[] = files.filter(file => isLegal(pattern, file.filename)).map(file => file.filename)
