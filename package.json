@@ -1,7 +1,7 @@
 {
-  "name": "legal-to-review",
+  "name": "file-to-review",
   "version": "1.0.0",
-  "description": "Legal-to-review is a Probot app that either comments on pull request that certain files require review from legal team or requests review from legal team when certain file(s) (e.g. LICENSE, etc.) is submitted with pull request.",
+  "description": "File-to-review is a Probot app that either comments on pull request that certain files require review from some team or requests review from some team when certain file(s) (e.g. LICENSE, etc.) is submitted with pull request.",
   "author": "JC <geminica.programs@gmail.com>",
   "license": "ISC",
   "repository": "https://github.com/gh-tests/legal-to-review.git",
