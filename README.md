@@ -1,38 +1,60 @@
-# legal-to-review app
+# files-to-review app
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that either comments on pull request
-that certain files require review from legal team or requests review from legal team when certain file(s)
+that certain files require review from predefined team or requests review from that team when certain file(s)
 (e.g. LICENSE, etc.) is submitted with pull request [pr]. See the following diagram for details:
 
 ![legal-to-review flow](./assets/legal-to-review-flow.png?raw=true)
 
 ## Setup
 
+### Default config
+
 By default app works in `comment-on-pull-request` mode and matches pull request's files against the following
 pattern:
 ```regexp
 (licen(s|c)e)|(copyright)|(code.?of.?conduct)
 ```
-Pattern can be modified by storing value under `legalFileRegExp` parameter of repository's `.github/config.yml`
-file. Here is an example on how to match only `foo` file modifications (note that patterns are compiled in
-case insensitve mode):
+as a result comment (similar to the one below) gets added to the pull request.
+
+![legal-should-review comment](./assets/comment.png?raw=true)
+
+
+### Configuration description
+
+One can configure several review criteria in `./github/config.yml` accroding to the following structure:
 ```yaml
-legalFileRegExp: foo
-```
+reviewCriteria:
+  - configName:
+    name: 'display-name'
+    regexp: 'pattern-to-search-for'
+    teams?:
+      - 'optional-reviewers-team-name'
 
-One can switch app to `request-review-to-legal-team` mode by storing legal team name under `legalTeam` parameter
-of repository's `.github/config.yml` file. Example on how to configure that `lawyers` team members should
-receive review request when legal files are modified:
+  ...
+```
+Note that `teams` parameters is optional and when it is provided given `review criteria` results in app working
+in `request-review-to-team` mode that manifests itself in adding team(s) to reviewers list similarly to
+the picture below:
+
+![review-request to legal](./assets/review-request.png?raw=true)
+
+### Example
+
+Setting the following configuration in `.github/config.yml` turns on `request-review-to-team` for `lawyers`
+when `legal` files are modified (e.g. *LICENSE*) and `comment-on-pull-request` for `ui-experts` when UI files
+are modified:
 ```yaml
-legalTeam: lawyers
+reviewCriteria:
+  - legal:
+    name: 'legal-to-review'
+    regexp: '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
+    teams:
+      - 'lawyers'
+  - ui-experts:
+    name: 'ui-experts-to-review'
+    regexp: '\.css$'
 ```
-
-_Note that both options can be combined in single `.github/config.yml` file._
-
-## TODO
-
-Turn legal-to-review into general purpose pull request comment/review request engine and turn legal-to-review into
-implementation example.
 
 ## Contributing
 
