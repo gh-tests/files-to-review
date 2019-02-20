@@ -59,6 +59,15 @@ and results in actions similar to the following pull request
 
 ![both-modes](./assets/combined.png?raw=true)
 
+## TODO
+
+Introduce the following features:
+* Issue comment even when `team` is provided so that team members can start review with focusing on area of interest files.
+  Will be especially handy when files are scattered within larger repositories.
+* Add possibility to `request-review-to-team` based on PR author's team membership. This is especially handy when junior
+  developer joins the org and his contributions should be reviewed by someone from mentors team.
+* Consider acting on pull request updates.
+
 ## Contributing
 
 If you have suggestions for how files-to-review could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
