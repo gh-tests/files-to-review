@@ -1,8 +1,9 @@
 # ![cipy rules](./assets/cipy_rules_small.png) files-to-review app
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that either comments on pull request
-that certain files require review from predefined team or requests review from that team when certain file(s)
-(e.g. LICENSE, etc.) is submitted with pull request [pr]. See the following diagram for details:
+> A GitHub App built with [Probot](https://github.com/probot/probot) that comments on pull request
+that certain files require review from predefined team and requests review from that team when certain file(s)
+(e.g. LICENSE, etc.) is submitted with pull request [pr]. The latter action is performed only when team(s) is
+configured. See the following diagram for details:
 
 ![legal-to-review flow](./assets/legal-to-review-flow.png?raw=true)
 
@@ -22,7 +23,7 @@ as a result comment (similar to the one below) gets added to the pull request.
 
 ### Configuration description
 
-One can configure several review criteria in `./github/config.yml` accroding to the following structure:
+One can configure several review criterias in `./github/config.yml` according to the following structure:
 ```yaml
 reviewCriteria:
   - configName:
@@ -33,17 +34,13 @@ reviewCriteria:
 
   ...
 ```
-Note that `teams` parameter is optional and when it is provided given `review criteria` results in app working
-in `request-review-to-team` mode that manifests itself in adding team(s) to reviewers list similarly to
-the picture below:
+Note that `teams` parameter is optional and when it is provided given `review criteria` results in app issuing
+2 actions `comment-on-pull-request` and `request-review-to-team` that manifests itself commenting which files
+need to be reviewed and adding team(s) to reviewers list.
 
-![review-request to legal](./assets/review-request.png?raw=true)
+#### Example
 
-### Example
-
-Setting the following configuration in `.github/config.yml` turns on `request-review-to-team` for `legal`
-when corresponding files are modified (e.g. *LICENSE*) and `comment-on-pull-request` for `ui-experts` when UI files
-are modified:
+Setting the following configuration in `.github/config.yml`
 ```yaml
 reviewCriteria:
   - legal:
@@ -55,15 +52,18 @@ reviewCriteria:
     name: 'ui-experts-to-review'
     regexp: '\.css$'
 ```
-and results in actions similar to the following pull request:
+results in the following actions being performed:
+* comment indicating files to be reviewed by `legal-to-review` is added
+* `legal` team is added to the _Reviewers_ list
+* comment indicating files to be reviewed by `ui-experts-to-review` is added
+
+It looks similar to the following pull request:
 
 ![both-modes](./assets/combined.png?raw=true)
 
 ## TODO
 
-Introduce the following features:
-* Issue comment even when `team` is provided so that team members can start review with focusing on area of interest files.
-  Will be especially handy when files are scattered within larger repositories.
+Introduce the following feature(s):
 * Add possibility to `request-review-to-team` based on PR author's team membership. This is especially handy when junior
   developer joins the org and his contributions should be reviewed by someone from mentors team.
 * Consider acting on pull request updates.

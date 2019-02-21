@@ -1,12 +1,12 @@
 {
   "name": "file-to-review",
   "version": "1.0.0",
-  "description": "File-to-review is a Probot app that either comments on pull request that certain files require review from some team or requests review from some team when certain file(s) (e.g. LICENSE, etc.) is submitted with pull request.",
+  "description": "File-to-review is a Probot app that comments on pull request that certain files (e.g. LICENSE, etc.) require review from specific team and optionally requests review from that team. The latter action is performed only when team name is configured.",
   "author": "JC <geminica.programs@gmail.com>",
   "license": "ISC",
-  "repository": "https://github.com/gh-tests/file-to-review.git",
-  "homepage": "https://github.com/gh-tests/file-to-review",
-  "bugs": "https://github.com/gh-tests/file-to-review/issues",
+  "repository": "https://github.com/geminica-apps/file-to-review.git",
+  "homepage": "https://github.com/geminica-apps/file-to-review",
+  "bugs": "https://github.com/geminica-apps/file-to-review/issues",
   "keywords": [
     "probot",
     "github",
