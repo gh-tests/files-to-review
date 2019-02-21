@@ -60,9 +60,9 @@ export = (app: Application) => {
 
   async function review (context: Context, review: string, reviewFiles: string[]) {
     context.log(`Comment that some files need review in PR:[${context.payload.pull_request.number}]`)
-    const body: string = `The following files require ${review}:` +
+    const body: string = `The following files require \`${review}\`:` +
       reviewFiles.reduce(function (acc: string, val: string) {
-        return acc.concat('\n', val)
+        return acc.concat('\n* ', val)
       }, '')
     let reviewComment: PullRequestsCreateReviewParams = context.issue({ body: body })
     reviewComment.event = 'COMMENT'
