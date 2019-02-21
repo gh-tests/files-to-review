@@ -1,42 +1,76 @@
-# legal-to-review app
+# ![cipy rules](./assets/cipy_rules_small.png) files-to-review app
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that either comments on pull request
-that certain files require review from legal team or requests review from legal team when certain file(s)
-(e.g. LICENSE, etc.) is submitted with pull request [pr]. See the following diagram for details:
+> A GitHub App built with [Probot](https://github.com/probot/probot) that comments on a pull request
+that certain files require review from a predefined team and requests review from that team when certain files
+(e.g. LICENSE, etc.) are part of the pull request [pr]. The latter operation is performed only when teams are
+configured. See the following diagram for details:
 
 ![legal-to-review flow](./assets/legal-to-review-flow.png?raw=true)
 
 ## Setup
 
-By default app works in `comment-on-pull-request` mode and matches pull request's files against the following
+### Default config
+
+By default, the app works in `comment-on-pull-request` mode and matches pull request's files against the following
 pattern:
 ```regexp
 (licen(s|c)e)|(copyright)|(code.?of.?conduct)
 ```
-Pattern can be modified by storing value under `legalFileRegExp` parameter of repository's `.github/config.yml`
-file. Here is an example on how to match only `foo` file modifications (note that patterns are compiled in
-case insensitve mode):
-```yaml
-legalFileRegExp: foo
-```
+as a result comment (similar to the one below) gets added to the pull request.
 
-One can switch app to `request-review-to-legal-team` mode by storing legal team name under `legalTeam` parameter
-of repository's `.github/config.yml` file. Example on how to configure that `lawyers` team members should
-receive review request when legal files are modified:
-```yaml
-legalTeam: lawyers
-```
+![legal-should-review comment](./assets/comment.png?raw=true)
 
-_Note that both options can be combined in single `.github/config.yml` file._
+
+### Configuration description
+
+One can configure several review criterias in `./github/config.yml` according to the following structure:
+```yaml
+reviewCriteria:
+  - configName:
+    name: 'display-name'
+    regexp: 'pattern-to-search-for'
+    teams?:
+      - 'optional-reviewers-team-name'
+
+  ...
+```
+Note that `teams` parameter is optional and when it is provided given `review criteria` results in app performing
+2 operations `comment-on-pull-request` and `request-review-to-team` that manifests itself commenting which files
+need to be reviewed and adding team(s) to reviewers list.
+
+#### Example
+
+Setting the following configuration in `.github/config.yml`
+```yaml
+reviewCriteria:
+  - legal:
+    name: 'legal-to-review'
+    regexp: '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
+    teams:
+      - 'Lawyers'
+  - ui-experts:
+    name: 'ui-experts-to-review'
+    regexp: '\.css$'
+```
+results in the following operations being performed:
+* comment indicating files to be reviewed by `legal-to-review` is added
+* `Lawyers` team is added to the _Reviewers_ list
+* comment indicating files to be reviewed by `ui-experts-to-review` is added
+
+It looks similar to the following pull request:
+
+![both-modes](./assets/combined.png?raw=true)
 
 ## TODO
 
-Turn legal-to-review into general purpose pull request comment/review request engine and turn legal-to-review into
-implementation example.
+Introduce the following feature(s):
+* Add possibility to `request-review-to-team` based on PR author's team membership. This is especially handy when junior
+  developer joins the organization and his contributions should be reviewed by someone more experiences (e.g `Mentors` team member).
+* Consider acting on pull request updates.
 
 ## Contributing
 
-If you have suggestions for how legal-to-review could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
+If you have suggestions for how files-to-review could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
 
 For more, check out the [Contributing Guide](CONTRIBUTING.md).
 

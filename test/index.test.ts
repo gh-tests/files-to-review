@@ -1,17 +1,24 @@
 import nock from 'nock'
 
-import myProbotApp from '../src'
+import myProbotApp from '../src/index'
 import { Probot } from 'probot'
 
 // Fixtures
 import prWithLegalFiles from './fixtures/pull_request.legal_files.json'
 import prWithNoLegalFiles from './fixtures/pull_request.ignored_files.json'
-import prReviewCommentBody from './fixtures/pull_request.review_comment.json'
-import prReviewRequestBody from './fixtures/pull_request.review_request.json'
+import prReviewLegalCommentBody from './fixtures/pull_request.review_legal_comment.json'
+import prReviewSomeCommentBody from './fixtures/pull_request.review_some_comment.json'
+import prSomeReviewRequestBody from './fixtures/pull_request.review_request.json'
 import prOpened from './fixtures/pull_request.opened.json'
 import contentFile from './fixtures/content_file.json'
 
 const gitHubApiUrl: string = 'https://api.github.com'
+const configData: string = `reviewCriteria:
+  - some:
+    name: "some-to-review"
+    regexp: "barfile"
+    teams:
+      - some`
 
 nock.disableNetConnect()
 
@@ -41,7 +48,7 @@ describe('Legal-to-review rest flow app', () => {
     // comment which files need to be reviewed by legal team
     const comment = nock(gitHubApiUrl)
       .post('/repos/foo/bar/pulls/3/reviews', (body: any) => {
-        expect(body).toMatchObject(prReviewCommentBody)
+        expect(body).toMatchObject(prReviewLegalCommentBody)
         return true
       })
       .reply(200)
@@ -80,7 +87,7 @@ describe('Legal-to-review rest flow app', () => {
     done()
   })
 
-  test("sends review request to 'legal' team according to config.yml", async (done) => {
+  test("comments & sends review request to 'some' team according to config.yml", async (done) => {
     testAccessToken()
 
     // PR has legal files
@@ -90,19 +97,26 @@ describe('Legal-to-review rest flow app', () => {
       .reply(200, prWithNoLegalFiles)
 
     // return config.yml that has regexp that matches 'barfile.txt'
-    // and has 'legal' as legal team value
+    // and has 'some' as team value
     contentFile.name = 'config.yml'
     contentFile.path = '.github/config.yml'
-    contentFile.content = Buffer.from('legalFileRegExp: "barfile"\nlegalTeam: "legal"')
-      .toString('base64')
+    contentFile.content = Buffer.from(configData).toString('base64')
     const config = nock(gitHubApiUrl)
       .get('/repos/foo/bar/contents/.github/config.yml')
       .reply(200, contentFile)
 
-    // 'legal' team review request should be performed
+    // comment which files need to be reviewed by legal team
+    const comment = nock(gitHubApiUrl)
+      .post('/repos/foo/bar/pulls/3/reviews', (body: any) => {
+        expect(body).toMatchObject(prReviewSomeCommentBody)
+        return true
+      })
+      .reply(200)
+
+    // 'some' team review request should be performed
     const review = nock(gitHubApiUrl)
       .post('/repos/foo/bar/pulls/3/requested_reviewers', (body: any) => {
-        expect(body).toMatchObject(prReviewRequestBody)
+        expect(body).toMatchObject(prSomeReviewRequestBody)
         return true
       })
       .reply(200)
@@ -110,7 +124,7 @@ describe('Legal-to-review rest flow app', () => {
     // Receive open PR event
     await probot.receive({ name: 'pull_request', payload: prOpened })
 
-    verifyMocksWereHit(files, config, review)
+    verifyMocksWereHit(files, config, comment, review)
     done()
   })
 })

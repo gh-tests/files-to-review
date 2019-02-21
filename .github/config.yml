@@ -1,1 +1,9 @@
-legalTeam: legal
+reviewCriteria:
+  - legal:
+    name: 'legal-to-review'
+    regexp: '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
+    teams:
+      - 'legal'
+  - ui-experts:
+    name: 'ui-experts-to-review'
+    regexp: '\.css$'

@@ -1,0 +1,4 @@
+{
+  "body": "The following files require `legal-to-review`:\n* some/path/LICENSE",
+  "event": "COMMENT"
+}
