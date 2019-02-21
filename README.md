@@ -1,8 +1,8 @@
 # ![cipy rules](./assets/cipy_rules_small.png) files-to-review app
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that comments on pull request
-that certain files require review from predefined team and requests review from that team when certain file(s)
-(e.g. LICENSE, etc.) is submitted with pull request [pr]. The latter action is performed only when team(s) is
+> A GitHub App built with [Probot](https://github.com/probot/probot) that comments on a pull request
+that certain files require review from a predefined team and requests review from that team when certain files
+(e.g. LICENSE, etc.) are part of the pull request [pr]. The latter operation is performed only when teams are
 configured. See the following diagram for details:
 
 ![legal-to-review flow](./assets/legal-to-review-flow.png?raw=true)
@@ -11,7 +11,7 @@ configured. See the following diagram for details:
 
 ### Default config
 
-By default app works in `comment-on-pull-request` mode and matches pull request's files against the following
+By default, the app works in `comment-on-pull-request` mode and matches pull request's files against the following
 pattern:
 ```regexp
 (licen(s|c)e)|(copyright)|(code.?of.?conduct)
@@ -34,8 +34,8 @@ reviewCriteria:
 
   ...
 ```
-Note that `teams` parameter is optional and when it is provided given `review criteria` results in app issuing
-2 actions `comment-on-pull-request` and `request-review-to-team` that manifests itself commenting which files
+Note that `teams` parameter is optional and when it is provided given `review criteria` results in app performing
+2 operations `comment-on-pull-request` and `request-review-to-team` that manifests itself commenting which files
 need to be reviewed and adding team(s) to reviewers list.
 
 #### Example
@@ -47,14 +47,14 @@ reviewCriteria:
     name: 'legal-to-review'
     regexp: '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
     teams:
-      - 'legal'
+      - 'Lawyers'
   - ui-experts:
     name: 'ui-experts-to-review'
     regexp: '\.css$'
 ```
-results in the following actions being performed:
+results in the following operations being performed:
 * comment indicating files to be reviewed by `legal-to-review` is added
-* `legal` team is added to the _Reviewers_ list
+* `Lawyers` team is added to the _Reviewers_ list
 * comment indicating files to be reviewed by `ui-experts-to-review` is added
 
 It looks similar to the following pull request:
@@ -65,7 +65,7 @@ It looks similar to the following pull request:
 
 Introduce the following feature(s):
 * Add possibility to `request-review-to-team` based on PR author's team membership. This is especially handy when junior
-  developer joins the org and his contributions should be reviewed by someone from mentors team.
+  developer joins the organization and his contributions should be reviewed by someone more experiences (e.g `Mentors` team member).
 * Consider acting on pull request updates.
 
 ## Contributing
