@@ -6,7 +6,8 @@ import { Probot } from 'probot'
 // Fixtures
 import prWithLegalFiles from './fixtures/pull_request.legal_files.json'
 import prWithNoLegalFiles from './fixtures/pull_request.ignored_files.json'
-import prReviewCommentBody from './fixtures/pull_request.review_comment.json'
+import prReviewLegalCommentBody from './fixtures/pull_request.review_legal_comment.json'
+import prReviewSomeCommentBody from './fixtures/pull_request.review_some_comment.json'
 import prSomeReviewRequestBody from './fixtures/pull_request.review_request.json'
 import prOpened from './fixtures/pull_request.opened.json'
 import contentFile from './fixtures/content_file.json'
@@ -47,7 +48,7 @@ describe('Legal-to-review rest flow app', () => {
     // comment which files need to be reviewed by legal team
     const comment = nock(gitHubApiUrl)
       .post('/repos/foo/bar/pulls/3/reviews', (body: any) => {
-        expect(body).toMatchObject(prReviewCommentBody)
+        expect(body).toMatchObject(prReviewLegalCommentBody)
         return true
       })
       .reply(200)
@@ -86,7 +87,7 @@ describe('Legal-to-review rest flow app', () => {
     done()
   })
 
-  test("sends review request to 'some' team according to config.yml", async (done) => {
+  test("comments & sends review request to 'some' team according to config.yml", async (done) => {
     testAccessToken()
 
     // PR has legal files
@@ -104,6 +105,14 @@ describe('Legal-to-review rest flow app', () => {
       .get('/repos/foo/bar/contents/.github/config.yml')
       .reply(200, contentFile)
 
+    // comment which files need to be reviewed by legal team
+    const comment = nock(gitHubApiUrl)
+      .post('/repos/foo/bar/pulls/3/reviews', (body: any) => {
+        expect(body).toMatchObject(prReviewSomeCommentBody)
+        return true
+      })
+      .reply(200)
+
     // 'some' team review request should be performed
     const review = nock(gitHubApiUrl)
       .post('/repos/foo/bar/pulls/3/requested_reviewers', (body: any) => {
@@ -115,7 +124,7 @@ describe('Legal-to-review rest flow app', () => {
     // Receive open PR event
     await probot.receive({ name: 'pull_request', payload: prOpened })
 
-    verifyMocksWereHit(files, config, review)
+    verifyMocksWereHit(files, config, comment, review)
     done()
   })
 })

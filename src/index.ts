@@ -33,11 +33,10 @@ export = (app: Application) => {
       const pattern: RegExp = new RegExp(config.regexp, 'i')
       const legalFiles: string[] = files.filter(file => isLegal(pattern, file.filename)).map(file => file.filename)
       if (legalFiles.length > 0) {
+        await review(context, config.name || '', legalFiles)
         // request review only when teams are specified
         if (config.teams && config.teams.length > 0) {
           await requestReview(context, config.teams)
-        } else {
-          await review(context, config.name || '', legalFiles)
         }
       }
     }
