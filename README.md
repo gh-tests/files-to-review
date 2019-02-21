@@ -1,4 +1,4 @@
-# files-to-review app
+# ![cipy rules](./assets/cipy_rules_small.png) files-to-review app
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that either comments on pull request
 that certain files require review from predefined team or requests review from that team when certain file(s)
@@ -33,7 +33,7 @@ reviewCriteria:
 
   ...
 ```
-Note that `teams` parameters is optional and when it is provided given `review criteria` results in app working
+Note that `teams` parameter is optional and when it is provided given `review criteria` results in app working
 in `request-review-to-team` mode that manifests itself in adding team(s) to reviewers list similarly to
 the picture below:
 
@@ -55,7 +55,7 @@ reviewCriteria:
     name: 'ui-experts-to-review'
     regexp: '\.css$'
 ```
-and results in actions similar to the following pull request
+and results in actions similar to the following pull request:
 
 ![both-modes](./assets/combined.png?raw=true)
 
