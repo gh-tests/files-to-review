@@ -15,7 +15,6 @@ import contentFile from './fixtures/content_file.json'
 const gitHubApiUrl: string = 'https://api.github.com'
 const configData: string = `reviewCriteria:
   - some:
-    name: "some-to-review"
     regexp: "barfile"
     teams:
       - some`

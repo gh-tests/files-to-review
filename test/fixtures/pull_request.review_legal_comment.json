@@ -1,4 +1,4 @@
 {
-  "body": "The following files require `legal-to-review`:\n* some/path/LICENSE",
+  "body": "`Legal` expert review is needed for:\n* some/path/LICENSE",
   "event": "COMMENT"
 }
