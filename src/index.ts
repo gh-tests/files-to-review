@@ -33,7 +33,7 @@ export = (app: Application) => {
       const pattern: RegExp = new RegExp(config.regexp, 'i')
       const legalFiles: string[] = files.filter(file => isLegal(pattern, file.filename)).map(file => file.filename)
       if (legalFiles.length > 0) {
-        await review(context, config.name || '', legalFiles)
+        await review(context, config.reason || '', legalFiles, config.teams)
         // request review only when teams are specified
         if (config.teams && config.teams.length > 0) {
           await requestReview(context, config.teams)
@@ -58,9 +58,11 @@ export = (app: Application) => {
     await context.github.pullRequests.createReviewRequest(reviewRequest)
   }
 
-  async function review (context: Context, review: string, reviewFiles: string[]) {
+  async function review (context: Context, reason: string, reviewFiles: string[], teams?: string[]) {
     context.log(`Comment that some files need review in PR:[${context.payload.pull_request.number}]`)
-    const body: string = `The following files require \`${review}\`:` +
+    const body: string = ((reason && reason.length > 0) || !teams
+      ? `${reason}:`
+      : '`' + teams.join('`, `') + '` review is needed for:') +
       reviewFiles.reduce(function (acc: string, val: string) {
         return acc.concat('\n* ', val)
       }, '')

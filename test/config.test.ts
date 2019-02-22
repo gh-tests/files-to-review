@@ -16,19 +16,20 @@ describe('ReviewConfig tests', () => {
   test('properly parses reviewCriteria from config.yml', () => {
     const expected: ReviewConfig.ReviewCriteria[] =
       [
-        { name: 'some-to-review', regexp: 'some', teams: [ 'team1', 'team2' ] }
+        { reason: 'some-to-review', regexp: 'some', teams: [ 'team1', 'team2' ] }
       ]
     expect(ReviewConfig.getCriteria({ reviewCriteria: expected })).toEqual(expected)
   })
 
   test('skips reviewCriteria without regexp from config.yml', () => {
-    const expected: ReviewConfig.ReviewCriteria = { name: 'some-to-review', regexp: 'some' }
+    const withReason: ReviewConfig.ReviewCriteria = { reason: 'some-to-review', regexp: 'some' }
+    const withTeam: ReviewConfig.ReviewCriteria = { regexp: 'missing-name', teams: [ 'team' ] }
     const input: ReviewConfig.ReviewCriteria[] =
       [
-        expected,
-        { name: 'missing-regexp', teams: [ 'team' ] },
-        { regexp: 'missing-name', teams: [ 'team' ] }
+        withReason,
+        withTeam,
+        { reason: 'missing-regexp', teams: [ 'team' ] }
       ]
-    expect(ReviewConfig.getCriteria({ reviewCriteria: input })).toEqual([ expected ])
+    expect(ReviewConfig.getCriteria({ reviewCriteria: input })).toEqual([ withReason, withTeam ])
   })
 })

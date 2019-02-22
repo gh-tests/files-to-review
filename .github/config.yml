@@ -1,9 +1,8 @@
 reviewCriteria:
   - legal:
-    name: 'legal-to-review'
     regexp: '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
     teams:
-      - 'legal'
+      - 'Lawyers'
   - ui-experts:
-    name: 'ui-experts-to-review'
+    reason: 'UI expert review is needed for stylesheets'
     regexp: '\.css$'
