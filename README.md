@@ -48,7 +48,7 @@ reviewCriteria:
 ```
 would:
 * comment which files should reviewed by the `Lawyers` team
-* add `Lawyers` team is added to the _Reviewers_ list
+* add `Lawyers` team to the _Reviewers_ list
 * comment that `UI expert review is needed for stylesheets`
 
 ![both-modes](./assets/combined.png?raw=true)
