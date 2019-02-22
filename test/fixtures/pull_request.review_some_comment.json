@@ -1,4 +1,4 @@
 {
-  "body": "The following files require `some-to-review`:\n* barfile.txt",
+  "body": "`some` review is needed for:\n* barfile.txt",
   "event": "COMMENT"
 }

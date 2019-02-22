@@ -1,12 +1,12 @@
 {
   "name": "file-to-review",
   "version": "1.0.0",
-  "description": "File-to-review is a Probot app that comments on a pull request that certain files (e.g. LICENSE, etc.) require review from the specific team and optionally requests a review from that team. The latter operation is performed only when a team name is configured.",
+  "description": "Files To Review is a Probot app similar to GitHub's CODEOWNERS but offers more powerful expressions and tells teams which files they should review.",
   "author": "JC <geminica.programs@gmail.com>",
   "license": "ISC",
-  "repository": "https://github.com/geminica-apps/file-to-review.git",
-  "homepage": "https://github.com/geminica-apps/file-to-review",
-  "bugs": "https://github.com/geminica-apps/file-to-review/issues",
+  "repository": "https://github.com/geminica-apps/files-to-review.git",
+  "homepage": "https://github.com/geminica-apps/files-to-review",
+  "bugs": "https://github.com/geminica-apps/files-to-review/issues",
   "keywords": [
     "probot",
     "github",
@@ -53,6 +53,7 @@
     ]
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "verbose": true
   }
 }

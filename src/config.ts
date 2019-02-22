@@ -1,9 +1,9 @@
 const DEF_PATTERN: string = '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
-export const LEGAL_TO_REVIEW = { name: 'legal-to-review', regexp: DEF_PATTERN }
+export const LEGAL_TO_REVIEW: ReviewCriteria = { reason: '`Legal` expert review is needed for', regexp: DEF_PATTERN }
 export const DEF_CONFIG = { reviewCriteria: [ LEGAL_TO_REVIEW ] }
 
 export interface ReviewCriteria {
-  name?: string
+  reason?: string
   regexp?: string
   teams?: string[]
 }
@@ -20,5 +20,6 @@ export function getCriteria (config: ReviewConfig | any): ReviewCriteria[] {
 }
 
 function isConfig (config: ReviewCriteria | any): config is ReviewCriteria {
-  return (<ReviewCriteria>config).regexp !== undefined && (<ReviewCriteria>config).name !== undefined
+  return (<ReviewCriteria>config).regexp !== undefined &&
+    ((<ReviewCriteria>config).reason !== undefined || (<ReviewCriteria>config).teams !== undefined)
 }
