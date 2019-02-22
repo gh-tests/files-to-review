@@ -1,0 +1,8 @@
+reviewCriteria:
+  - legal:
+    regexp: '(licen(s|c)e)|(copyright)|(code.?of.?conduct)'
+    teams:
+      - 'Lawyers'
+  - ui-experts:
+    reason: 'UI expert review is needed for stylesheets'
+    regexp: '\.css$'
