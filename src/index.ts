@@ -31,7 +31,7 @@ export = (app: Application) => {
         continue
       }
       const pattern: RegExp = new RegExp(config.regexp, 'i')
-      const legalFiles: string[] = files.filter(file => isLegal(pattern, file.filename)).map(file => file.filename)
+      const legalFiles: string[] = files.filter(file => pattern.test(file.filename)).map(file => file.filename)
       if (legalFiles.length > 0) {
         await review(context, config.reason || '', legalFiles, config.teams)
         // request review only when teams are specified
@@ -46,10 +46,6 @@ export = (app: Application) => {
     context.log(`PR:[${context.payload.pull_request.number}] has been updated`)
     // TODO: next step would be to handle PR updates
   })
-
-  function isLegal (pattern: RegExp, path: string): boolean {
-    return pattern.test(path)
-  }
 
   async function requestReview (context: Context, teams: string[]) {
     context.log(`Issue review request for PR:[${context.payload.pull_request.number}] for team: [${teams}]`)
