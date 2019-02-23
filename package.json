@@ -1,7 +1,7 @@
 {
   "name": "files-to-review",
   "version": "1.0.0",
-  "description": "Files To Review is a Probot app similar to GitHub's CODEOWNERS but offers more powerful expressions and tells teams which files they should review.",
+  "description": "Files To Review is a Probot app, similar to CODEOWNERS from GitHub, that offers more powerful expressions and tells teams which files they should review.",
   "author": "JC <geminica.programs@gmail.com>",
   "license": "ISC",
   "repository": "https://github.com/geminica-apps/files-to-review.git",
