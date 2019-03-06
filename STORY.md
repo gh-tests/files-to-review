@@ -1,9 +1,6 @@
 # Files To Review
 aka `which files should I review`
 
-A GitHub App built with [Probot](https://github.com/probot/probot) that listens on [pull request](https://developer.github.com/v3/activity/events/types/#pullrequestevent)
-webhook event and tells teams which files they should review.
-
 
 # Webhooks & Probot: what's all the fuss about?
 
