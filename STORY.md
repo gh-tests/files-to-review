@@ -23,11 +23,13 @@ Probot a GitHub App framework ([docs](https://probot.github.io/docs/)):
 
 # Humble beginnings
 
-Files To Review = GitHub's [Code Owners](https://help.github.com/en/articles/about-code-owners)
-+ extended expressions
-+ list of files to review
+Dev for devs IOW Why?
 
-By default the app matches files against the following pattern
+Files To Review is similar to GitHub's [Code Owners](https://help.github.com/en/articles/about-code-owners) but
+* offers extended expressions
+* displays a list of files to review
+
+Default pattern
 ```regexp
 (licen(s|c)e)|(copyright)|(code.?of.?conduct)
 ```
@@ -48,10 +50,10 @@ reviewCriteria:
 to your repository's `./github/config.yml`
 [picture]
 
-Syntax available in [README.md](https://github.com/geminica-apps/files-to-review/blob/master/README.md#configuration-description).
+Full syntax available in [README.md](https://github.com/geminica-apps/files-to-review/blob/master/README.md#configuration-description).
 
 
-# Behind the scene
+# Behind the scenes
 [diagram]
 
 APIs called:
@@ -63,9 +65,12 @@ APIs called:
 
 
 # Turn Files To Review into Pull Request Assistant
-* LFS Locks guard
 * juniors and mentors
+* LFS locks guard
 * automatically propose reviewers (blame/history)
 * ChatOps
 * insights
 * ...
+
+
+# Q&A
